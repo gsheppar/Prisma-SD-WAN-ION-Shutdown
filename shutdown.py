@@ -11,8 +11,6 @@ import ipaddress
 import os
 import datetime
 from datetime import datetime, timedelta
-import dateutil
-from dateutil.relativedelta import relativedelta
 import sys
 import csv
 
@@ -45,20 +43,20 @@ except ImportError:
         # not set
         CLOUDGENIX_AUTH_TOKEN = None
 
-def shutdown(cgx, element_name) : 
+def shutdown(cgx, serial_number) : 
     
     element_found = False
 
     for element in cgx.get.elements().cgx_content['items']:
-        if element["name"] == element_name:
+        if element["serial_number"] == serial_number:
             element_found = True
             data = {"action":"shutdown","parameters":None}
             resp = cgx.post.tenant_element_operations(element_id=element["id"],data=data)
             if not resp:
-                print("Error shutting down " + element["name"] + "\n")
+                print("Error shutting down " + element["serial_number"] + "\n")
                 print(str(jd_detailed(resp)))
             else:
-                print("Shutting down " + element["name"] + "\n")
+                print("Shutting down " + element["serial_number"] + "\n")
     
     if not element_found:
         print("Unable to find ION " + element_name)     
@@ -76,7 +74,7 @@ def go():
 
     # Allow Controller modification and debug level sets.
     config_group = parser.add_argument_group('Name', 'These options change how the configuration is loaded.')
-    config_group.add_argument("--name", "-N", help="Element Name", required=True, default=None)
+    config_group.add_argument("--serial", "-S", help="Element Name", required=True, default=None)
     controller_group = parser.add_argument_group('API', 'These options change how this program connects to the API.')
     controller_group.add_argument("--controller", "-C",
                                   help="Controller URI, ex. "
@@ -137,9 +135,9 @@ def go():
     tenant_str = "".join(x for x in cgx_session.tenant_name if x.isalnum()).lower()
     cgx = cgx_session
     
-    element_name = args["name"]
+    serial_number = args["serial"]
     
-    shutdown(cgx, element_name) 
+    shutdown(cgx, serial_number) 
     # end of script, run logout to clear session.
     print("End of script. Logout!")
     cgx_session.get.logout()

@@ -16,8 +16,8 @@ MIT
 ### Examples of usage:
  Please generate your API token and add it to cloudgenix_settings.py
 
- 1. ./shutdown.py --name Branch-Site-1-ION1
-      - Will shutdown the ION named Branch-Site-1-ION1
+ 1. ./shutdown.py --serial 20-019291-9468
+      - Will shutdown the ION serial number 20-019291-9468
 
 ### Caveats and known issues:
  - This is a PREVIEW release, hiccups to be expected. Please file issues on Github for any problems.
